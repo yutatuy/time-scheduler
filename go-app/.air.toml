@@ -1,0 +1,5 @@
+root = "."
+tmp_dir = "dist"
+[build]
+cmd = "go build -o ./dist/main ."
+bin = "dist/main"

@@ -1,0 +1,31 @@
+version: "3"
+services:
+  go:
+    build:
+      context: .
+      dockerfile: ./docker/golang/Dockerfile
+    container_name: go
+    volumes:
+      - ./go-app:/app/go
+    ports:
+      - 8000:8000
+    networks:
+      - time-scheduler_backend
+  db:
+    container_name: db
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: docker
+      MYSQL_DATABASE: time_scheduler
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      TZ: "Asia/Tokyo"
+    volumes:
+      - ./docker/mysql/mysql_data:/var/lib/mysql
+      - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
+    networks:
+      - time-scheduler_backend
+networks:
+  time-scheduler_backend:
