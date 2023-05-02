@@ -9,6 +9,11 @@ services:
       - ./go-app:/app/go
     ports:
       - 8000:8000
+    environment:
+      - GOOSE_DRIVER=mysql
+      - GOOSE_DBSTRING=docker:docker@tcp(db:3306)/time_scheduler
+    depends_on:
+      - db
     networks:
       - time-scheduler_backend
   db:
