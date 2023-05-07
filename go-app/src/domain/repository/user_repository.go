@@ -12,6 +12,7 @@ func NewUserRepository() UserRepository {
 
 type UserRepository interface {
 	CreateByEmail(user entity.User) (*entity.User, error)
+	FindByEmail(email string) (*entity.User, error)
 }
 
 type UserRepositoryImpl struct {
@@ -21,7 +22,7 @@ func (r *UserRepositoryImpl) CreateByEmail(user entity.User) (*entity.User, erro
 	db := connection.DBConnect()
 	gormUser := &model.GormUser{
 		Email:    user.Email,
-		Password: user.Password,
+		Password: []byte(user.Password),
 	}
 
 	result := db.Create(gormUser)
@@ -29,9 +30,22 @@ func (r *UserRepositoryImpl) CreateByEmail(user entity.User) (*entity.User, erro
 		return nil, result.Error
 	}
 
-	entity := &entity.User{
-		Email:    gormUser.Email,
-		Password: gormUser.Password,
+	return createFromGorm(gormUser), nil
+}
+
+func (r *UserRepositoryImpl) FindByEmail(email string) (*entity.User, error) {
+	db := connection.DBConnect()
+	var user model.GormUser
+	if err := db.Where("email = ?", email).First(&user).Error; err != nil {
+		return nil, err
 	}
-	return entity, nil
+
+	return createFromGorm(&user), nil
+}
+
+func createFromGorm(u *model.GormUser) *entity.User {
+	return &entity.User{
+		Email:    u.Email,
+		Password: u.Password,
+	}
 }

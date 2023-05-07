@@ -9,3 +9,7 @@ import (
 func RegisterByEmail() gin.HandlerFunc {
 	return usecase.RegisterUserByEmail()
 }
+
+func LoginByEmail() gin.HandlerFunc {
+	return usecase.LoginByEmail()
+}

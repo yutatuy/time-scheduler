@@ -8,4 +8,6 @@ RUN apk add --no-cache git \
     && go build -o /go/bin/air \
     && rm -rf $GOPATH/pkg/mod/* 
 
+RUN go install github.com/pressly/goose/v3/cmd/goose@latest
+
 CMD air -c .air.toml
