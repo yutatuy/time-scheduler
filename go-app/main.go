@@ -28,6 +28,7 @@ func main() {
 	r := gin.Default()
 	r.POST("/api/user/register", controller.RegisterByEmail())
 	r.POST("/api/user/login", controller.LoginByEmail())
+	r.GET("/api/user/schedules", controller.FetchScheduleList())
 
 	if err := r.Run(":8000"); err != nil {
 		log.Fatalf("failed to run server: %v", err)

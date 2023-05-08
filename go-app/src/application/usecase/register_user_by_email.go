@@ -10,15 +10,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type RegisterUserByEmailRequest struct {
+type RegisterByEmailRequest struct {
 	Email    string
 	Password string
 }
 
-func RegisterUserByEmail() gin.HandlerFunc {
+func RegisterByEmail() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
-		var req RegisterUserByEmailRequest
+
+		var req RegisterByEmailRequest
 
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

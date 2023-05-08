@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"go-app/src/domain/repository"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -41,10 +43,11 @@ func LoginByEmail() gin.HandlerFunc {
 			"user_id": user.Id,
 			"exp":     time.Now().Add(time.Hour * 24).Unix(),
 		}
+		godotenv.Load()
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-		tokenString, _ := token.SignedString([]byte("SECRET_KEY"))
+		tokenString, _ := token.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
 		fmt.Println("tokenString:", tokenString)
 
-		c.JSON(http.StatusOK, gin.H{"status": tokenString})
+		c.JSON(http.StatusOK, gin.H{"jwt": tokenString})
 	}
 }
