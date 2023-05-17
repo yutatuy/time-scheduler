@@ -1,12 +1,17 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type GormUser struct {
 	gorm.Model
-	Id       int    `gorm:"not null;unique"`
-	Email    string `gorm:"not null;unique"`
-	Password []byte `gorm:"not null"`
+	ID              int    `gorm:"not null;unique"`
+	Email           string `gorm:"not null;unique"`
+	Password        []byte `gorm:"not null"`
+	EmailVerifiedAt *time.Time
 }
 
 func (GormUser) TableName() string {
