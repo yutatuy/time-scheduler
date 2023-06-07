@@ -16,37 +16,70 @@ func RegisterByEmail(c *gin.Context) {
 	db := connection.DBConnect()
 	ctx := context.Background()
 	tx := gormpkg.NewTransaction(db)
-	input, _ := convertor.NewRegisterByEmailConvertor(c)
-
-	output, _ := usecase.NewRegisterByEmailUsecase(
+	presenter := presenter.NewRegisterByEmailPresenter(c)
+	convertor := convertor.NewRegisterByEmailConvertor(c)
+	usecase := usecase.NewRegisterByEmailUsecase(
 		ctx, tx,
 		repository.NewRegisterEmailVerifyTokenRepository(db),
 		repository.NewUserRepository(db),
-	).Exec(input)
-	presenter.RegisterByEmailPresenterExec(c, output)
+	)
+
+	input, err := convertor.Exec()
+	if err != nil {
+		presenter.Error(err)
+		return
+	}
+	output, err := usecase.Exec(input)
+	if err != nil {
+		presenter.Error(err)
+		return
+	}
+	presenter.Exec(output)
 }
 
 func VerifyRegisterEmail(c *gin.Context) {
 	db := connection.DBConnect()
 	tx := gormpkg.NewTransaction(db)
-	input := convertor.NewVerifyRegisterEmailConvertor(c)
-
-	output, _ := usecase.NewVerifyRegisterEmailUsecase(
+	presenter := presenter.NewVerifyRegisterEmailPresenter(c)
+	convertor := convertor.NewVerifyRegisterEmailConvertor(c)
+	usecase := usecase.NewVerifyRegisterEmailUsecase(
 		tx,
 		repository.NewRegisterEmailVerifyTokenRepository(db),
 		repository.NewUserRepository(db),
-	).Exec(input)
-	presenter.VerifyRegisterEmailPresenterExec(c, output)
+	)
+
+	input, err := convertor.Exec()
+	if err != nil {
+		presenter.Error(err)
+		return
+	}
+	output, err := usecase.Exec(input)
+	if err != nil {
+		presenter.Error(err)
+		return
+	}
+	presenter.Exec(output)
 }
 
 func LoginByEmail(c *gin.Context) {
 	db := connection.DBConnect()
 	ctx := context.Background()
 	tx := gormpkg.NewTransaction(db)
-	input, _ := convertor.NewLoginByEmailConvertor(c)
-
-	output, _ := usecase.NewLoginByEmailUsecase(
+	convertor := convertor.NewLoginByEmailConvertor(c)
+	presenter := presenter.NewLoginByEmailPresenter(c)
+	usecase := usecase.NewLoginByEmailUsecase(
 		ctx, tx, repository.NewUserRepository(db),
-	).Exec(input)
-	presenter.LoginByEmailExec(c, output)
+	)
+
+	input, err := convertor.Exec()
+	if err != nil {
+		presenter.Error(err)
+		return
+	}
+	output, err := usecase.Exec(input)
+	if err != nil {
+		presenter.Error(err)
+		return
+	}
+	presenter.Exec(output)
 }

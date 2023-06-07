@@ -18,6 +18,7 @@ func NewRegisterEmailVerifyTokenRepository(db *gorm.DB) RegisterEmailVerifyToken
 type RegisterEmailVerifyTokenRepository interface {
 	Create(ctx context.Context, e entity.RegisterEmailVerifyToken) (*entity.RegisterEmailVerifyToken, error)
 	FindByToken(t string) (*entity.RegisterEmailVerifyToken, error)
+	FindByUserIDAndEmail(id int, email string) (*entity.RegisterEmailVerifyToken, error)
 }
 
 type RegisterEmailVerifyTokenRepositoryImpl struct {
@@ -50,6 +51,16 @@ func (r *RegisterEmailVerifyTokenRepositoryImpl) FindByToken(t string) (*entity.
 	var token model.GormRegisterEmailVerifyToken
 
 	if err := r.db.Model(&model.GormRegisterEmailVerifyToken{}).Where("token = ?", t).First(&token).Error; err != nil {
+		return nil, err
+	}
+
+	return createFromGormRegisterEmailVerifyToken(&token), nil
+}
+
+func (r *RegisterEmailVerifyTokenRepositoryImpl) FindByUserIDAndEmail(id int, email string) (*entity.RegisterEmailVerifyToken, error) {
+	var token model.GormRegisterEmailVerifyToken
+
+	if err := r.db.Model(&model.GormRegisterEmailVerifyToken{}).Where("user_id = ?", id).Where("email = ?", email).First(&token).Error; err != nil {
 		return nil, err
 	}
 

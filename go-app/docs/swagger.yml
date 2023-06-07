@@ -1,0 +1,90 @@
+# NOTE:コード量が大きくなってきたら別ファイルに分割する
+openapi: 3.0.0
+info:
+  title: API Document
+  description: API for managing time-scheduler
+  version: 1.0.0
+servers:
+  - url: http://api.example.com/v1
+tags:
+  - name: user
+paths:
+  /api/user/register:
+    post:
+      tags:
+        - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterUserRequest'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NoResponse'
+  /api/user/login:
+    post:
+      tags:
+      - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUserRequest'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NoResponse'
+  /api/user/verify-register-email:
+    post:
+      tags:
+      - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyRegisterEmailRequest'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NoResponse'
+components:
+  schemas:
+    RegisterUserRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    NoResponse:
+      type: object
+    LoginUserRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    VerifyRegisterEmailRequest:
+      type: object
+      properties:
+        token:
+          type: string
+          
+          
+          
+          
+          
+          
+          
+          

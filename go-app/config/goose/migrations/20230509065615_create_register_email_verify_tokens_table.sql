@@ -2,13 +2,14 @@
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS `register_email_verify_tokens` (
   `id` BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-  `user_id` VARCHAR(255) NOT NULL,
+  `user_id` BIGINT UNSIGNED NOT NULL,
   `email` VARBINARY(255) NOT NULL,
   `token` VARCHAR(255) NOT NULL UNIQUE,
   `expired_at` DATETIME NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `deleted_at` DATETIME
+  `deleted_at` DATETIME,
+  FOREIGN KEY (user_id) REFERENCES users(id)
 )
 ENGINE = InnoDB
 COMMENT = '登録前のメールアドレス検証用トークン';

@@ -13,10 +13,19 @@ type RegisterByEmailRequest struct {
 	Password string `validate:"required,min=8,max=20"`
 }
 
-func NewRegisterByEmailConvertor(c *gin.Context) (*usecase.RegisterByEmailUsecaseInput, error) {
-	var req RegisterByEmailRequest
+type registerByEmailRequestConvertor struct {
+	c *gin.Context
+}
 
-	if err := c.ShouldBindJSON(&req); err != nil {
+func NewRegisterByEmailConvertor(c *gin.Context) *registerByEmailRequestConvertor {
+	return &registerByEmailRequestConvertor{
+		c: c,
+	}
+}
+
+func (convertor *registerByEmailRequestConvertor) Exec() (*usecase.RegisterByEmailUsecaseInput, error) {
+	var req RegisterByEmailRequest
+	if err := convertor.c.ShouldBindJSON(&req); err != nil {
 		return nil, err
 	}
 

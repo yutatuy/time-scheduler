@@ -9,7 +9,7 @@ type User struct {
 	EmailVerifiedAt *time.Time `json:"email_verified_at"`
 }
 
-func (u *User) VerifyEmail() {
+func (u *User) SetEmailVerifiedAt() {
 	now := time.Now()
 	u.EmailVerifiedAt = &now
 }

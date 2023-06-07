@@ -8,15 +8,25 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-type VerifyRegisterEmailRequest struct {
+type verifyRegisterEmailRequest struct {
 	Token string `validate:"required"`
 }
 
-func NewVerifyRegisterEmailConvertor(c *gin.Context) *usecase.VerifyRegisterEmailUsecaseInput {
-	var req VerifyRegisterEmailRequest
+type verifyRegisterEmailConvertor struct {
+	c *gin.Context
+}
 
-	if err := c.ShouldBindJSON(&req); err != nil {
-		panic(err)
+func NewVerifyRegisterEmailConvertor(c *gin.Context) *verifyRegisterEmailConvertor {
+	return &verifyRegisterEmailConvertor{
+		c: c,
+	}
+}
+
+func (con *verifyRegisterEmailConvertor) Exec() (*usecase.VerifyRegisterEmailUsecaseInput, error) {
+
+	var req verifyRegisterEmailRequest
+	if err := con.c.ShouldBindJSON(&req); err != nil {
+		return nil, err
 	}
 
 	validate := validator.New()
@@ -25,10 +35,10 @@ func NewVerifyRegisterEmailConvertor(c *gin.Context) *usecase.VerifyRegisterEmai
 		for _, err := range err.(validator.ValidationErrors) {
 			fmt.Printf("Error: %s\n", err)
 		}
-		panic(err)
+		return nil, err
 	}
 
 	return &usecase.VerifyRegisterEmailUsecaseInput{
 		Token: req.Token,
-	}
+	}, nil
 }

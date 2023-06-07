@@ -1,12 +1,19 @@
 package presenter
 
 import (
-	"go-app/src/application/usecase"
-	"net/http"
+	adapter_share "go-app/src/adapter/share"
 
 	"github.com/gin-gonic/gin"
 )
 
-func LoginByEmailExec(c *gin.Context, o *usecase.LoginByEmailUsecaseOutput) {
-	c.JSON(http.StatusOK, gin.H{"jwt": o.Token})
+type loginByEmailPresenter struct {
+	adapter_share.BaseAPIPresenter
+}
+
+func NewLoginByEmailPresenter(ctx *gin.Context) *loginByEmailPresenter {
+	return &loginByEmailPresenter{
+		BaseAPIPresenter: adapter_share.BaseAPIPresenter{
+			Ctx: ctx,
+		},
+	}
 }

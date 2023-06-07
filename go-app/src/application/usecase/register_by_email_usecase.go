@@ -2,10 +2,12 @@ package usecase
 
 import (
 	"context"
+	application_error "go-app/src/application/error"
 	"go-app/src/domain/entity"
 	"go-app/src/domain/factory"
 	"go-app/src/domain/repository"
 	"go-app/src/domain/shared"
+	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -44,22 +46,22 @@ func NewRegisterByEmailUsecase(ctx context.Context, tx shared.Transaction, rr re
 func (u *registerByEmailUsecase) Exec(i *RegisterByEmailUsecaseInput) (*RegisterByEmailUsecaseOutput, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(i.Password), bcrypt.DefaultCost)
 	if err != nil {
-		panic(err)
+		return nil, &application_error.APIError{Code: http.StatusInternalServerError, Message: err.Error()}
 	}
 
-	u.tx.DoInTx(u.ctx, func(ctx context.Context) (interface{}, error) {
+	txErr := u.tx.DoInTx(u.ctx, func(ctx context.Context) error {
 		user, err := u.userRepository.Create(ctx, entity.User{
 			Email:    i.Email,
 			Password: hashedPassword,
 		})
 
 		if err != nil {
-			panic(err)
+			return &application_error.APIError{Code: http.StatusInternalServerError, Message: err.Error()}
 		}
 
 		registerEmailVerifyToken, err := u.registerEmailVerifyTokenRepository.Create(ctx, factory.NewRegisterEmailVerifyToken(user.ID, user.Email))
 		if err != nil {
-			panic(err)
+			return &application_error.APIError{Code: http.StatusInternalServerError, Message: err.Error()}
 		}
 
 		godotenv.Load()
@@ -71,8 +73,12 @@ func (u *registerByEmailUsecase) Exec(i *RegisterByEmailUsecaseInput) (*Register
 		}
 		emailSender := repository.NewEmailSender()
 		emailSender.Send(email)
-		return nil, nil
+		return nil
 	})
+
+	if txErr != nil {
+		return nil, &application_error.APIError{Code: http.StatusInternalServerError, Message: err.Error()}
+	}
 
 	return &RegisterByEmailUsecaseOutput{}, nil
 }

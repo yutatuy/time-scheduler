@@ -2,6 +2,7 @@ package main
 
 import (
 	"go-app/src/adapter/controller"
+	"go-app/src/infrastructure/configs"
 	"go-app/src/infrastructure/middleware"
 	"log"
 
@@ -40,10 +41,15 @@ import (
 */
 
 func main() {
+	_, err := configs.InitConfig(".env")
+	if err != nil {
+		panic(err)
+	}
+
 	r := gin.Default()
 	r.POST("/api/user/register", controller.RegisterByEmail)
 	r.POST("/api/user/login", controller.LoginByEmail)
-	r.POST("/api/user/verify-register-email-token", controller.VerifyRegisterEmail)
+	r.POST("/api/user/verify-register-email", controller.VerifyRegisterEmail)
 
 	authGroup := r.Group("")
 	authGroup.Use(middleware.AuthMiddleware)

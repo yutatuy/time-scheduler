@@ -1,12 +1,19 @@
 package presenter
 
 import (
-	"go-app/src/application/usecase"
-	"net/http"
+	adapter_share "go-app/src/adapter/share"
 
 	"github.com/gin-gonic/gin"
 )
 
-func VerifyRegisterEmailPresenterExec(c *gin.Context, o *usecase.VerifyRegisterEmailUsecaseOutput) {
-	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+type verifyRegisterEmailPresenter struct {
+	adapter_share.BaseAPIPresenter
+}
+
+func NewVerifyRegisterEmailPresenter(ctx *gin.Context) *verifyRegisterEmailPresenter {
+	return &verifyRegisterEmailPresenter{
+		BaseAPIPresenter: adapter_share.BaseAPIPresenter{
+			Ctx: ctx,
+		},
+	}
 }

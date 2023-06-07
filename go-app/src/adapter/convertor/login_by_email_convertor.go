@@ -8,15 +8,25 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-type LoginByEmailRequest struct {
+type loginByEmailRequest struct {
 	Email    string `validate:"required,email"`
 	Password string `validate:"required,min=8,max=20"`
 }
 
-func NewLoginByEmailConvertor(c *gin.Context) (*usecase.LoginByEmailUsecaseInput, error) {
-	var req LoginByEmailRequest
+type loginByEmailConverter struct {
+	ctx *gin.Context
+}
 
-	if err := c.ShouldBindJSON(&req); err != nil {
+func NewLoginByEmailConvertor(ctx *gin.Context) *loginByEmailConverter {
+	return &loginByEmailConverter{
+		ctx: ctx,
+	}
+}
+
+func (con *loginByEmailConverter) Exec() (*usecase.LoginByEmailUsecaseInput, error) {
+	var req loginByEmailRequest
+
+	if err := con.ctx.ShouldBindJSON(&req); err != nil {
 		return nil, err
 	}
 

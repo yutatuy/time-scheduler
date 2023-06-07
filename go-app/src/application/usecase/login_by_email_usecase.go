@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 	"go-app/src/domain/repository"
 	"go-app/src/domain/shared"
 	"os"
@@ -63,7 +62,6 @@ func (u *loginByEmailUsecase) Exec(i *LoginByEmailUsecaseInput) (*LoginByEmailUs
 	godotenv.Load()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, _ := token.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
-	fmt.Println("tokenString:", tokenString)
 
 	return &LoginByEmailUsecaseOutput{Token: tokenString}, nil
 

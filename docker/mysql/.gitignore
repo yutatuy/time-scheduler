@@ -1,4 +1,6 @@
 /mysql_data
+/mysql_data_test
 /conf.d
 /initdb.d
+/initdb_test.d
 !.gitignore

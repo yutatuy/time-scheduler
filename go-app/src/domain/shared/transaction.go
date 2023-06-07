@@ -5,5 +5,5 @@ import (
 )
 
 type Transaction interface {
-	DoInTx(context.Context, func(context.Context) (interface{}, error)) (interface{}, error)
+	DoInTx(context.Context, func(context.Context) error) error
 }

@@ -17,29 +17,28 @@ func NewTransaction(db *gorm.DB) shared.Transaction {
 
 var txKey = struct{}{}
 
-func (t *tx) DoInTx(ctx context.Context, f func(ctx context.Context) (interface{}, error)) (interface{}, error) {
+func (t *tx) DoInTx(ctx context.Context, f func(ctx context.Context) error) error {
 	tx := t.db.Begin()
 	if tx.Error != nil {
-		return nil, tx.Error
+		return tx.Error
 	}
 
 	ctx = context.WithValue(ctx, &txKey, tx)
 
-	v, err := f(ctx)
+	err := f(ctx)
 	if err != nil {
 		tx.Rollback()
-		return nil, err
+		return err
 	}
 
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
-		return nil, err
+		return err
 	}
-	return v, nil
+	return nil
 }
 
 func GetTx(ctx context.Context) (*gorm.DB, bool) {
-
 	tx, ok := ctx.Value(&txKey).(*gorm.DB)
 	return tx, ok
 }

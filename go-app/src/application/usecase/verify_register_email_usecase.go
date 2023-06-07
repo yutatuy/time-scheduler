@@ -39,7 +39,7 @@ func (u *verifyRegisterEmailUsecase) Exec(i *VerifyRegisterEmailUsecaseInput) (*
 	}
 
 	if token.CheckExpired() {
-		return nil, errors.New("Token Expired!")
+		return nil, errors.New("token expired")
 	}
 
 	user, err := u.userRepository.FindByID(token.UserID)
@@ -47,7 +47,7 @@ func (u *verifyRegisterEmailUsecase) Exec(i *VerifyRegisterEmailUsecaseInput) (*
 		return nil, err
 	}
 
-	user.VerifyEmail()
+	user.SetEmailVerifiedAt()
 	_, updateErr := u.userRepository.Update(user)
 	if updateErr != nil {
 		return nil, updateErr
