@@ -11,7 +11,6 @@ test: ## ファイルを指定してtestの実行
 	${DOCKER_COMPOSE_EXEC} go go test -v $${FILE}
 
 bash: ## goコンテナにアタッチ
-	bash: ## goコンテナにアタッチ
 	${DOCKER_COMPOSE_EXEC} -it go sh
 
 goose-up: ## DBのup
@@ -32,4 +31,5 @@ goose-down-test: ## test用DBのdown
 goose-reset-test: ## test用DBのreset
 	${DOCKER_COMPOSE_EXEC} -it go sh -c "cd ${TARGET_MIGRATION_DIR} && GOOSE_DBSTRING=${GOOSE_DBSTRING_TEST} goose reset"
 
-
+local-seed: ## ローカル用のテストデータ作成
+	${DOCKER_COMPOSE_EXEC} -it go sh -c "go run config/seed/local/main.go "
