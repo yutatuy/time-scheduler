@@ -25,5 +25,7 @@ jobs:
       - name: Change to go-app directory
         run: cd go-app
 
+      - run: go mod tidy
+
       - name: Run Tests
         run: go test ./...
