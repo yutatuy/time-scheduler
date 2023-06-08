@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    name: Run Tests
+    name: Run Go Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -25,6 +25,7 @@ jobs:
       - name: Change to go-app directory
         run: cd go-app
 
+      - run: go mod init
       - run: go mod tidy
 
       - name: Run Tests
