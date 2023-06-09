@@ -19,7 +19,7 @@ jobs:
         with:
           go-version: 1.19.5
       - name: build db container
-        run: docker-compose up -d db
+        run: docker-compose up -d test-db
       - name: Change directory
         run: |
           cd go-app
