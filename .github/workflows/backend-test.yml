@@ -22,6 +22,7 @@ jobs:
         run: docker-compose up -d test-db
       - name: Change directory
         run: |
+          docker-compose ps
           cd go-app
           ls
           go get -v -t -d ./...
