@@ -19,9 +19,6 @@ jobs:
         with:
           go-version: 1.19.5
       - name: build db container
-        run: | 
-          docker-compose up -d
+        run: docker-compose up -d db app
       - name: test 
-        run: |
-          docker-compose ps
-          make test-all
+        run: make test-all
