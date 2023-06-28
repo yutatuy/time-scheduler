@@ -7,6 +7,6 @@ services:
   swagger-ui:
     deploy:
       replicas: 0
-  swagger-edit:
+  swagger-editor:
     deploy:
       replicas: 0
