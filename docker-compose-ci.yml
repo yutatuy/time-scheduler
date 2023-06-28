@@ -8,5 +8,6 @@ services:
     deploy:
       replicas: 0
   swagger-edit:
+    image: example/swagger-edit-image
     deploy:
       replicas: 0
