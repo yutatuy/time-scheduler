@@ -1,4 +1,4 @@
-version: "3"
+version: '3.9'
 
 services:
   db:
@@ -8,6 +8,5 @@ services:
     deploy:
       replicas: 0
   swagger-edit:
-    image: example/swagger-edit-image
     deploy:
       replicas: 0
