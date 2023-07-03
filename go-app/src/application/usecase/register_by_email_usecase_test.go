@@ -41,5 +41,4 @@ func TestRegisterByEmailUsecase(t *testing.T) {
 	registerEmailVerifyToken, _ := revtr.FindByUserIDAndEmail(user.ID, user.Email)
 	assert.Equal(t, user.ID, registerEmailVerifyToken.UserID, "UserId should be equal")
 	assert.Equal(t, user.Email, registerEmailVerifyToken.Email, "Email should be equal")
-
 }

@@ -11,7 +11,7 @@ test: ## ファイルを指定してtestの実行
 	${DOCKER_COMPOSE_EXEC} go go test -v $${FILE}
 
 test-all: ## 全てのtestの実行
-	${DOCKER_COMPOSE_EXEC} go go test ./...
+	${DOCKER_COMPOSE_EXEC} go go test ./... -v
 
 bash: ## goコンテナにアタッチ
 	${DOCKER_COMPOSE_EXEC} -it go sh

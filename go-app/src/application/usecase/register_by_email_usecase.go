@@ -8,7 +8,6 @@ import (
 	"go-app/src/domain/repository"
 	"go-app/src/domain/shared"
 	"net/http"
-	"os"
 
 	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
@@ -65,12 +64,7 @@ func (u *registerByEmailUsecase) Exec(i *RegisterByEmailUsecaseInput) (*Register
 		}
 
 		godotenv.Load()
-		email := &entity.Email{
-			From:      os.Getenv("SUPPORT_ADDRESS"),
-			Receivers: []string{user.Email},
-			Subject:   "会員登録",
-			Body:      registerEmailVerifyToken.Token,
-		}
+		email := entity.RegisterEmailFactory(user.Email, registerEmailVerifyToken.Token)
 		emailSender := repository.NewEmailSender()
 		emailSender.Send(email)
 		return nil

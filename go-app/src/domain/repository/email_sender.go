@@ -1,13 +1,13 @@
 package repository
 
 import (
-	"fmt"
+	"bytes"
 	"go-app/src/domain/entity"
-	"net/smtp"
-	"os"
-	"strings"
+	"go-app/src/infrastructure/configs"
+	"strconv"
+	"text/template"
 
-	"github.com/joho/godotenv"
+	"gopkg.in/gomail.v2"
 )
 
 func NewEmailSender() EmailSender {
@@ -19,14 +19,28 @@ type EmailSender interface {
 }
 
 type EmailSenderImpl struct{}
+var contentType = "text/plain"
 
 func (es EmailSenderImpl) Send(e *entity.Email) {
-	godotenv.Load()
-	smtpServer := fmt.Sprintf("%s:%s", os.Getenv("MAIL_HOST"), os.Getenv("MAIL_PORT"))
-	auth := smtp.CRAMMD5Auth(os.Getenv("MAIL_USER"), os.Getenv("MAIL_PASSWORD"))
-	msg := []byte(fmt.Sprintf("To: %s\nSubject: %s\n\n%s", strings.Join(e.Receivers, ","), e.Subject, e.Body))
+	smtpHost := configs.Config.Mail.Host
+	smtpPort, _ := strconv.Atoi(configs.Config.Mail.Port)
+	smtpUsername := configs.Config.Mail.User
+	smtpPassword := configs.Config.Mail.Password
+	t, err := template.ParseFiles(e.TemplateFiles...)
+	buff := &bytes.Buffer{}
+	t.Execute(buff, e.TemplateVars)
+  if err != nil {
+    panic(err)
+  }
 
-	if err := smtp.SendMail(smtpServer, auth, e.From, e.Receivers, msg); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+	m := gomail.NewMessage()
+	m.SetHeader("From", e.From)
+	m.SetHeader("To", e.Receivers...)
+	m.SetHeader("Subject", e.Subject)
+	m.SetBody(contentType, buff.String())
+
+	d := gomail.NewDialer(smtpHost, smtpPort, smtpUsername, smtpPassword)
+	if err := d.DialAndSend(m); err != nil {
+		panic(err)
 	}
 }
